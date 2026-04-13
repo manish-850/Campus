@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Portal | Campus Care AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-accent: #00f2fe;
+            --secondary-accent: #4facfe;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 100%; min-height: 100vh;
+            background: radial-gradient(circle at top right, #0a192f, #000814);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION (Same as Home) --- */
+        nav {
+            width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary-accent); letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 300; transition: 0.3s; opacity: 0.7; }
+        .nav-links a:hover { opacity: 1; color: var(--primary-accent); }
+
+        /* --- BACKGROUND BLOBS --- */
+        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .blob {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.1) 0%, transparent 70%);
+            border-radius: 50%; animation: float 20s infinite alternate;
+        }
+        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(60px, 60px); } }
+
+        /* --- LOGIN SECTION --- */
+        #login-container {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 80vh; padding: 20px;
+        }
+        .login-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 30px;
+            padding: 40px; width: 100%; max-width: 450px; text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+        .login-card h1 { font-family: 'Playfair Display', serif; margin-bottom: 10px; color: var(--primary-accent); }
+        
+        input {
+            width: 100%; padding: 15px; margin: 20px 0;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            border-radius: 12px; color: white; font-family: inherit; outline: none;
+        }
+        input:focus { border-color: var(--primary-accent); }
+
+        /* --- DASHBOARD SECTION (Initially Hidden) --- */
+        #dashboard-container {
+            display: none; width: 90%; max-width: 1200px; margin: 40px auto;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .problems-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px;
+        }
+        .card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 25px; transition: 0.3s;
+        }
+        .card:hover { border-color: var(--primary-accent); }
+
+        .btn {
+            width: 100%; padding: 15px;
+            background: linear-gradient(45deg, var(--secondary-accent), var(--primary-accent));
+            border: none; border-radius: 12px; color: #041c4f;
+            font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+        }
+        .btn:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,242,254,0.3); }
+
+        /* --- TOAST --- */
+        #toast {
+            visibility: hidden; min-width: 300px; position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%); background: rgba(10,25,47,0.9);
+            border: 1px solid #ff4b2b; color: white; padding: 15px; border-radius: 12px; z-index: 1000;
+        }
+        #toast.show { visibility: visible; animation: slideUp 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { bottom: -50px; } to { bottom: 30px; } }
+    </style>
+</head>
+<body>
+
+    <div id="toast"></div>
+
+    <div class="bg-glow"><div class="blob"></div></div>
+
+    <nav>
+        <div class="logo">CAMPUS CARE.AI</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="./pages/about.html">About</a></li>
+            <li><a href="./pages/admin.html" style="color: var(--primary-accent); opacity: 1;">Admin</a></li>
+            <li><a href="./pages/support.html">Support</a></li>
+        </ul>
+    </nav>
+
+    <main id="login-container">
+        <div class="login-card">
+            <h1>Executive Login</h1>
+            <p style="opacity: 0.6; font-size: 0.9rem;">Authenticate to manage complaints</p>
+            <input type="text" id="adminID" placeholder="Enter Unique Executive ID">
+            <button class="btn" onclick="authenticate()">Login to Dashboard</button>
+        </div>
+    </main>
+
+    <main id="dashboard-container">
+        <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem;">Assigned Cases</h2>
+            <button class="btn" style="width: auto; padding: 10px 25px;" onclick="location.reload()">Logout</button>
+        </div>
+
+        <div class="problems-grid" id="problemsContainer">
+            </div>
+    </main>
+
+    <script>
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.innerHTML = msg; t.className = "show";
+            setTimeout(() => { t.className = ""; }, 4000);
+        }
+        async function authenticate() {
+            const idInput = document.getElementById('adminID').value;
+            // /admin/login
+            // Backend call logic
+            try {
+                const response = await fetch('http://127.0.0.1:8000/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ uniqueId: idInput })
+                });
+                
+                let result = {};
+                try {
+                    result = await response.json();
+                    localStorage.setItem("admin_token", result.token);
+                    // console.log(response,result);
+                } catch {
+                    result = {};
+                }
+                if (response.ok && result.success) {
+                    loadDashboard();
+                } else {
+                    showToast("⚠️ <b>Authentication Problem:</b> Wrong Input ID.");
+                }
+            } catch (error) {
+                // If backend not connected yet, show error
+                    console.error(error);
+                    showToast("❌ Backend connection failed");
+                
+            }
+        }
+
+        async function loadDashboard() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('dashboard-container').style.display = 'block';
+            const token = localStorage.getItem("admin_token");
+            const response = await fetch('http://127.0.0.1:8000/admin/complaints', {
+                method: 'GET',
+                headers: {
+                    'token': token
+                }
+            });
+            if (!response.ok) {
+                console.error(await response.text());
+                showToast("❌ Unauthorized or server error");
+                return;
+            }
+            // console.log(response,data.data);
+            // Demo data insertion
+            const container = document.getElementById('problemsContainer');
+            let clutter = '';
+            const data = await response.json();
+            data.data.forEach((c)=>{
+                clutter += `
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                        <span style="color:var(--primary-accent); font-weight:700;">${c.id}</span>
+                        <span style="font-size:0.7rem; opacity:0.5;">${c.category}</span>
+                    </div>
+                    <p style="font-size:0.95rem; margin-bottom:15px;">${c.name} in ${c.room}, ${c.block}.</p>
+                    <select style="width:100%; background:rgba(0,0,0,0.3); color:white; padding:8px; border:1px solid var(--glass-border); border-radius:5px;">
+                        <option>Submitted</option>
+                        <option>In Progress</option>
+                        <option>Resolved</option>
+                    </select>
+                    <textarea style="width:100%; background:rgba(0,0,0,0.3); color:white; padding:8px; border:1px solid var(--glass-border); border-radius:5px; margin-top:10px;" placeholder="Add resolution..."></textarea>
+                    <button class="btn" style="margin-top:15px; padding:10px;" onclick="updateHandler(${c.id},this)">Update</button>
+                </div>
+            `
+            })
+            container.innerHTML = clutter;
+        }
+
+        async function updateHandler(id,btn) {
+            const card = btn.closest('.card');
+
+            const status = card.querySelector('select').value;
+            const resolution = card.querySelector('textarea').value;
+            const token = localStorage.getItem("admin_token");
+            const response = await fetch(`http://127.0.0.1:8000/admin/update/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': token
+                },
+                body: JSON.stringify({
+                    status: status,
+                    resolution: resolution
+                })
+            });
+
+            if (!response.ok) {
+                showToast("❌ Update failed");
+                return;
+            }
+
+            showToast("✅ Status updated successfully!");
+        }
+    </script>
+</body>
+</html>
