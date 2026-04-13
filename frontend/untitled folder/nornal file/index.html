@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Care AI | Student Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-accent: #00f2fe;
+            --secondary-accent: #4facfe;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at top right, #0a192f, #000814);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s infinite alternate;
+        }
+        .blob-2 { top: 50%; left: 70%; animation-duration: 30s; animation-direction: reverse; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        nav {
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary-accent); }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { 
+            color: white; text-decoration: none; font-weight: 300; 
+            transition: 0.3s; opacity: 0.7; 
+        }
+        .nav-links a:hover { opacity: 1; color: var(--primary-accent); }
+
+        
+        .header {
+            text-align: center;
+            padding: 100px 20px 60px;
+            animation: fadeIn 1s ease;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff 30%, var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            margin-bottom: 50px;
+            opacity: 0.8;
+        }
+        .stat-item { text-align: center; }
+        .stat-item h4 { font-size: 1.5rem; color: var(--primary-accent); }
+        .stat-item p { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .mid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 100px;
+        }
+
+        .box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 10px;
+            transition: 0.5s;
+            position: relative;
+        }
+        .box:hover {
+            transform: translateY(-20px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary-accent);
+            box-shadow: 0 30px 60px rgba(13, 64, 196, 0.3);
+            cursor: pointer;
+
+        }
+
+        .pic { 
+            width: 100%; height: 250px; 
+            border-radius: 22px; overflow: hidden; 
+        }
+        .pic img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .box:hover img { transform: scale(1.1); filter: brightness(0.7); }
+
+        .tag {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .tag h3 { font-size: 1.8rem; margin-bottom: 10px; color: #fff; }
+
+        .tag span { color: var(--secondary-accent); font-weight: 300; }
+
+        a {
+            text-decoration: none;
+            color: inherit;       
+        }
+
+        footer {
+            width: 100%;
+            padding: 60px 20px;
+            background: rgba(0,0,0,0.3);
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+        .footer-content { max-width: 600px; margin: 0 auto; }
+        .footer-content p { opacity: 0.5; font-size: 0.9rem; margin-top: 20px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <div class="logo">CAMPUS CARE.AI</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="admin.html">Admin</a></li>
+            <li><a href="support.html">Support</a></li>
+        </ul>
+    </nav>
+    
+    <section class="header">
+        <h1>Simplify Your <br> Campus Life.</h1>
+        <div class="power">Intuitive. Automated. Student-First.</div>
+    </section>
+
+    <div class="stats-bar">
+        <div class="stat-item"><h4>800+</h4><p>Students</p></div>
+        <div class="stat-item"><h4>24/7</h4><p>AI Support</p></div>
+        <div class="stat-item"><h4>Instant</h4><p>Resolution</p></div>
+    </div>
+
+    <section class="mid">
+        <div class="box">
+            <div class="pic">
+                <img src="a1686a70-6f2b-4330-bde7-7df4499e4773.jpg" alt="FAQ">
+            </div>
+            <div class="tag"><a href="faq.html">
+                <h3>Smart FAQ</h3>
+                <span>Ask anything, get instant answers.</span></a>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="pic">
+                <img src="complaints.jpg" alt="COMPLAINTS">
+            </div>
+            <div class="tag"><a href="complain.html">
+                <h3>Complaint Hub</h3>
+                <span>Your voice matters. Let us fix it.</span></a>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="pic">
+                <img src="photo-1552058461-dc1828d58bf6.jpg" alt="CANTEEN">
+            </div>
+            <div class="tag"><a href="canteen.html">
+                <h3>Canteen 2.0</h3>
+                <span>Pre-order meals and skip the queue.</span></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <h2 style="color: var(--primary-accent)">Campus Care AI</h2>
+            
+            <p>&copy; 2026 Campus Care AI. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

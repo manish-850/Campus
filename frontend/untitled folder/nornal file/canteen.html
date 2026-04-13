@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Menu | Campus Care AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-accent: #00f2fe;
+            --secondary-accent: #4facfe;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000814;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-color);
+            padding-bottom: 120px;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100; background: rgba(0, 8, 20, 0.8);
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary-accent); letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 300; transition: 0.3s; opacity: 0.7; font-size: 0.9rem; }
+        .nav-links a:hover { opacity: 1; color: var(--primary-accent); }
+        .cart-status { border-left: 1px solid var(--glass-border); padding-left: 20px; font-size: 0.9rem; font-weight: 300; }
+
+        /* --- ROW WISE LAYOUT --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 Columns for 4 Segments */
+            gap: 20px;
+            padding: 40px;
+            align-items: start;
+        }
+
+        .segment-container {
+            min-width: 0; /* Prevents grid items from overflowing */
+        }
+
+        .segment-title {
+            color: var(--primary-accent);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-accent);
+            padding-left: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .item-list {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .menu-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s;
+        }
+        .menu-row:last-child { border-bottom: none; }
+        .menu-row:hover { background: rgba(255,255,255,0.03); }
+
+        .item-info h4 { font-size: 0.95rem; font-weight: 400; margin-bottom: 3px; }
+        .item-info span { color: var(--primary-accent); font-weight: 700; font-size: 0.9rem; }
+
+        .add-btn {
+            background: transparent;
+            border: 1px solid var(--primary-accent);
+            color: var(--primary-accent);
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .add-btn:hover { background: var(--primary-accent); color: #000; }
+
+        /* --- CHECKOUT BAR --- */
+        .checkout-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(10, 25, 47, 0.98);
+            backdrop-filter: blur(25px);
+            border-top: 1px solid var(--primary-accent);
+            padding: 20px 50px;
+            display: flex; justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .order-btn {
+            background: linear-gradient(45deg, var(--secondary-accent), var(--primary-accent));
+            color: #041c4f; border: none;
+            padding: 14px 40px; border-radius: 12px;
+            font-weight: 700; cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: #0a192f; border: 1px solid var(--glass-border);
+            padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center;
+        }
+        .pay-option {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 15px; margin: 10px 0; border-radius: 12px; cursor: pointer;
+        }
+        .pay-option:hover { border-color: var(--primary-accent); background: rgba(0,242,254,0.1); }
+
+        #toast {
+            visibility: hidden; position: fixed; bottom: 110px; left: 50%;
+            transform: translateX(-50%); background: rgba(10, 25, 47, 0.9);
+            border: 1px solid var(--primary-accent); padding: 12px 25px; border-radius: 12px; z-index: 1000;
+        }
+        #toast.show { visibility: visible; animation: slideIn 0.4s ease; }
+
+        @keyframes slideIn { from { bottom: 50px; opacity: 0; } to { bottom: 110px; opacity: 1; } }
+
+        /* Responsive Fix */
+        @media (max-width: 1100px) {
+            .menu-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr; }
+            nav { padding: 20px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<nav>
+    <div class="logo">CAMPUS CARE.AI</div>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="admin.html">Admin</a></li>
+        <li><a href="support.html">Support</a></li>
+        <li class="cart-status">Items: <span id="cartCount" style="color:var(--primary-accent); font-weight:700;">0</span></li>
+    </ul>
+</nav>
+
+<div class="menu-grid">
+    <div class="segment-container">
+        <h2 class="segment-title">Beverages</h2>
+        <div class="item-list" id="beverages"></div>
+    </div>
+
+    <div class="segment-container">
+        <h2 class="segment-title">Starters</h2>
+        <div class="item-list" id="starters"></div>
+    </div>
+
+    <div class="segment-container">
+        <h2 class="segment-title">Main Course</h2>
+        <div class="item-list" id="maincourse"></div>
+    </div>
+
+    <div class="segment-container">
+        <h2 class="segment-title">Dessert</h2>
+        <div class="item-list" id="dessert"></div>
+    </div>
+</div>
+
+<div class="checkout-bar">
+    <div>
+        <p style="font-size: 0.7rem; opacity: 0.6;">TOTAL BILL</p>
+        <span id="totalPrice" style="color:var(--primary-accent); font-size: 1.8rem; font-weight: 700;">₹0</span>
+    </div>
+    <button class="order-btn" onclick="openPayment()">Place Order</button>
+</div>
+
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
+        <h2 style="margin-bottom: 20px; color: var(--primary-accent);">Payment Mode</h2>
+        <div class="pay-option" onclick="finalizeOrder('UPI')">📱 Instant UPI</div>
+        <div class="pay-option" onclick="finalizeOrder('COD')">💵 Cash on Delivery</div>
+        <button onclick="closeModal()" style="background:transparent; color:gray; border:none; margin-top:15px; cursor:pointer;">Cancel</button>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    const menuData = {
+        beverages: [
+            {n: "Cold Coffee", p: 60}, {n: "Masala Chai", p: 20}, {n: "Iced Tea", p: 45}, {n: "Lemonade", p: 30}, {n: "Oreo Shake", p: 80},
+            {n: "Mango Smoothie", p: 70}, {n: "Hot Chocolate", p: 55}, {n: "Fresh Lime", p: 25}, {n: "Cold Drink", p: 40}, {n: "Mineral Water", p: 20}
+        ],
+        starters: [
+            {n: "Paneer Tikka", p: 120}, {n: "French Fries", p: 60}, {n: "Veg Momos", p: 50}, {n: "Spring Rolls", p: 70}, {n: "Chilli Potato", p: 80},
+            {n: "Garlic Bread", p: 90}, {n: "Corn Salt & Pepper", p: 100}, {n: "Veg Cutlet", p: 40}, {n: "Crispy Babycorn", p: 110}, {n: "Onion Rings", p: 65}
+        ],
+        maincourse: [
+            {n: "Veg Thali", p: 150}, {n: "Paneer Butter Masala", p: 180}, {n: "Dal Makhani", p: 140}, {n: "Veg Biryani", p: 130}, {n: "Mix Veg", p: 110},
+            {n: "Butter Naan", p: 40}, {n: "Jeera Rice", p: 90}, {n: "Chole Bhature", p: 100}, {n: "Masala Dosa", p: 80}, {n: "Hakka Noodles", p: 120}
+        ],
+        dessert: [
+            {n: "Gulab Jamun", p: 40}, {n: "Vanilla Ice Cream", p: 50}, {n: "Brownie", p: 90}, {n: "Rasmalai", p: 60}, {n: "Pastry", p: 70},
+            {n: "Fruit Salad", p: 80}, {n: "Kulfi", p: 45}, {n: "Moong Dal Halwa", p: 65}, {n: "Lava Cake", p: 110}, {n: "Jalebi", p: 50}
+        ]
+    };
+
+    function loadMenu() {
+        for (let seg in menuData) {
+            const container = document.getElementById(seg);
+            menuData[seg].forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'menu-row';
+                row.innerHTML = `
+                    <div class="item-info">
+                        <h4>${item.n}</h4>
+                        <span>₹${item.p}</span>
+                    </div>
+                    <button class="add-btn" onclick="addToCart('${item.n}', ${item.p})">ADD</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+    }
+
+    function addToCart(name, price) {
+        // Ensuring price is treated as a Number
+        const itemPrice = Number(price);
+        cart.push({name: name, price: itemPrice});
+        updateUI();
+        showToast(`✅ ${name} added!`);
+    }
+
+    function updateUI() {
+        document.getElementById('cartCount').innerText = cart.length;
+        // Correcting the summation logic to avoid NaN
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('totalPrice').innerText = `₹${total}`;
+    }
+
+    function openPayment() {
+        if(cart.length === 0) {
+            showToast("⚠️ Cart is empty!");
+        } else {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+    }
+
+    function finalizeOrder(method) {
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('paymentModal').style.display = 'none';
+        showToast(`🚀 Order via ${method}...`);
+        setTimeout(() => {
+            alert(`Success! Total Bill: ₹${total}`);
+            cart = [];
+            updateUI();
+        }, 1000);
+    }
+
+    function closeModal() { document.getElementById('paymentModal').style.display = 'none'; }
+
+    function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.innerText = msg; t.className = "show";
+        setTimeout(() => t.className = "", 2000);
+    }
+
+    window.onload = loadMenu;
+</script>
+
+</body>
+</html>
