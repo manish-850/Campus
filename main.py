@@ -7,24 +7,26 @@ import logging
 from fastapi import FastAPI, Header, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+    "http://localhost:5173"],
     allow_credentials=True,
-    allow_methods=["*"],₹
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-ADMIN_ID = os.getenv("ADMIN_ID", "admin123")
+ADMIN_ID = os.getenv("ADMIN_ID","admin123")
 ADMIN_TOKEN = None
 def get_db():
     conn = sqlite3.connect("complaints.db")
@@ -37,20 +39,21 @@ def create_table():
     cur = conn.cursor()
 
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS complaints (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        regNo TEXT,
-        block TEXT,
-        room TEXT,
-        text TEXT,
-        category TEXT,
-        confidence INTEGER,
-        department TEXT,
-        status TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
+CREATE TABLE IF NOT EXISTS complaints (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    regNo TEXT,
+    block TEXT,
+    room TEXT,
+    text TEXT,
+    category TEXT,
+    confidence INTEGER,
+    department TEXT,
+    status TEXT,
+    resolution TEXT,   -- ✅ ADD THIS
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
 
     conn.commit()
     conn.close()
@@ -191,7 +194,7 @@ def track(complaint_id: int):
 def admin_login(payload: dict = Body(...)):
     global ADMIN_TOKEN
 
-    admin_id = payload.get("admin_id")
+    admin_id = payload.get("uniqueId")
 
     if admin_id == ADMIN_ID:
         ADMIN_TOKEN = secrets.token_hex(16)
@@ -218,28 +221,34 @@ def admin_all(token: str = Header(...)):
         "success": True,
         "data": [dict(r) for r in rows]
     }
+from pydantic import BaseModel
+
+class UpdateRequest(BaseModel):
+    status: str
+    resolution: str
+
 @app.put("/admin/update/{cid}")
 def update_status(
     cid: int,
-    status: str,
+    data: UpdateRequest,
     token: str = Header(...)
 ):
     verify(token)
 
-    if status not in ["Submitted", "In Progress", "Resolved", "Closed"]:
-        return {"success": False, "error": "Invalid status"}
+    if data.status not in ["Submitted", "In Progress", "Resolved", "Closed"]:
+        return {"success": False}
 
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute("""
-        UPDATE complaints SET status=? WHERE id=?
-    """, (status, cid))
+        UPDATE complaints SET status=?, resolution=? WHERE id=?
+    """, (data.status, data.resolution, cid))
 
     conn.commit()
     conn.close()
 
-    return {"success": True, "message": "Updated"}
+    return {"success": True}
 
 @app.put("/user/confirm/{cid}")
 def close(cid: int):

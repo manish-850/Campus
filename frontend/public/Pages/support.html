@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support & Directory | Campus Care AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-accent: #00f2fe;
+            --secondary-accent: #4facfe;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 100%; min-height: 100vh;
+            background: radial-gradient(circle at top right, #0a192f, #000814);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary-accent); letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 300; transition: 0.3s; opacity: 0.7; }
+        .nav-links a:hover { opacity: 1; color: var(--primary-accent); }
+
+        /* --- HEADER --- */
+        .header { text-align: center; padding: 60px 20px; animation: fadeIn 1s ease; }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            background: linear-gradient(to bottom, #fff, var(--secondary-accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- DIRECTORY SECTION --- */
+        .directory-container {
+            width: 90%; max-width: 1200px; margin: 0 auto 100px;
+        }
+
+        /* Top Hierarchy (Director & Faculty) */
+        .main-officials {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px; margin-bottom: 50px;
+        }
+
+        /* Secondary Grid (President, VP, etc.) */
+        .staff-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 25px;
+            padding: 30px; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .contact-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--primary-accent); opacity: 0; transition: 0.3s;
+        }
+        .contact-card:hover { transform: translateY(-5px); border-color: var(--primary-accent); }
+        .contact-card:hover::before { opacity: 1; }
+
+        .designation {
+            font-size: 0.75rem; letter-spacing: 2px; color: var(--primary-accent);
+            font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: block;
+        }
+        .name { font-size: 1.4rem; font-weight: 600; margin-bottom: 15px; }
+        
+        .contact-info { font-size: 0.9rem; opacity: 0.7; line-height: 1.8; }
+        .contact-info b { color: #fff; }
+
+        .email-link { color: var(--secondary-accent); text-decoration: none; transition: 0.3s; }
+        .email-link:hover { text-decoration: underline; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            nav { padding: 20px; } .nav-links { display: none; }
+            .main-officials { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">CAMPUS CARE.AI</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="./pages/about.html">About</a></li>
+            <li><a href="./pages/admin.html">Admin</a></li>
+            <li><a href="./pages/support.html" style="color: var(--primary-accent); opacity: 1;">Support</a></li>
+        </ul>
+    </nav>
+
+    <header class="header">
+        <h1>College Administration</h1>
+        <p style="opacity: 0.6; margin-top: 10px; letter-spacing: 1px;">OFFICIAL CONTACT DIRECTORY</p>
+    </header>
+
+    <main class="directory-container">
+        
+        <div class="main-officials">
+            <div class="contact-card">
+                <span class="designation">College Director</span>
+                <div class="name">Dr. Rajeev srivastava</div>
+                <div class="contact-info">
+                    <p><b>Office:</b> Main Administrative Block, Room 101</p>
+                    <p><b>Email:</b> <a href="mailto:director@iiitranchi.ac.in" class="email-link">director@iiitranchi.ac.in</a></p>
+                    <p><b>Phone:</b> +91 651 2260031</p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <span class="designation">Academic Head</span>
+                <div class="name">Dr. Roshan Singh</div>
+                <div class="contact-info">
+                    <p><b>Office:</b> Academic Section</p>
+                    <p><b>Email:</b> <a href="mailto:roshan@iiitranchi.ac.in" class="email-link">roshan@iiitranchi.ac.in</a></p>
+                    <p><b>Phone:</b> +91 70809 09077</p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="staff-grid">
+            <div class="contact-card">
+                <span class="designation">President</span>
+                <div class="name">Prashant Kumar Singh</div>
+                <div class="contact-info">
+                    <p><b>Email:</b> president@iiitranchi.ac.in</p>
+                    <p><b>Phone:</b> +91 76329 32731</p>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <span class="designation">Vice President</span>
+                <div class="name">Anil Alok</div>
+                <div class="contact-info">
+                    <p><b>Email:</b> vicepresident@iiitranchi.ac.in</p>
+                    <p><b>Phone:</b> +91 70614 64256</p>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <span class="designation">Faculty In-Charge (Student Welfare)</span>
+                <div class="name">Dr. Ankita kumari</div>
+                <div class="contact-info">
+                    <p><b>Email:</b>ankita@iiitranchi.ac.in</p>
+                    <p><b>Phone:</b> +91 7571 94488</p>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <span class="designation">Faculty In-Charge (Technical)</span>
+                <div class="name">Dr. Gaurav Sundaram</div>
+                <div class="contact-info">
+                    <p><b>Email:</b>gauravsundaram@iiitranchi.ac.in</p>
+                    <p><b>Phone:</b> +91 77658 76723</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer style="text-align: center; padding: 40px; opacity: 0.5; font-size: 0.8rem;">
+        &copy; 2026 Campus Care AI | For emergency assistance, contact Campus Security at 112.
+    </footer>
+
+</body>
+</html>
